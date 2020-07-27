@@ -8,7 +8,10 @@ router.get('/', function(req, res, next) {
     .then(customers => {
       res.render("index", {title: "Express", customers});
     })
-    .catch(error => console.log(error));
+    .catch(error => {
+      console.log(error);
+      res.render("error", {message: "Não foi possível listar os clientes", error})
+    });
 });
 
 router.get('/new', (request, response) => {
@@ -19,14 +22,20 @@ router.get('/edit/:customerId', (request, response) => {
   const id = request.params.customerId;
   db.findCustomer(id)
     .then(customer => response.render("customer", {title: "Edição de Cadastro", customer}))
-    .catch(error => console.log(error));
+    .catch(error => {
+      console.log(error);
+      res.render("error", {message: "Não foi possível retornar os dados do cliente", error})
+    });
 })
 
 router.get('/delete/:customerId', (request, response) => {
   const id = request.params.customerId;
   db.deleteCustomer(id)
     .then(result => response.redirect("/"))
-    .catch(error => console.log(error));
+    .catch(error => {
+      console.log(error);
+      res.render("error", {message: "Não foi possível excluir o cliente", error})
+    });
 })
 
 router.post('/new', (request, response) => {
@@ -51,8 +60,9 @@ router.post('/new', (request, response) => {
       response.redirect("/");
     })
     .catch(error => {
-      return console.log(error);
-    })
+      console.log(error);
+      res.render("error", {message: "Não foi possível salvar o cliente", error})
+    });
 })
 
 module.exports = router;
